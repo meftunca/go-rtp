@@ -1,20 +1,35 @@
 package rtp
 
+import (
+	"net/http"
+)
+
+// handlerPath için interface örneği
 type HandlerFunctionInterface interface {
 	POST(RTPRequest) RTPResponse
 	GET(RTPRequest) RTPResponse
 	DELETE(RTPRequest) RTPResponse
 	PUT(RTPRequest) RTPResponse
 }
+
 type HandlerFunc func(RTPRequest)
 
-func (h *RTPRequest) HandlerFunc(newRequest *RTPRequest, f HandlerFunc) *RTPResponse {
-	// return r.Handler(http.HandlerFunc(f))
-	resp := &RTPResponse{}
-	/*
-		TODO Methoda göre sınıflandırılma ayarlanacak
-		TODO Methoda uygun Fonksiyon çağırılacak
-		TODO Çağırılan fonksiyondan dönen değer return ile channel'a gönderilip kullanıcıya iletilecek
-	*/
-	return resp
+type HandlerPathFunc func(HandlerFunctionInterface)
+
+// RouteWrapper
+func (rtp *RTPCore) HandlePath(path string, handleFunc HandlerFunctionInterface) {
+	testRequest := new(RTPRequest)
+	rtp.Server.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
+		resp := &RTPResponse{}
+		switch r.Method {
+		case POSTMETHOD:
+			*resp = handleFunc.POST(*testRequest)
+		case GETMETHOD:
+			*resp = handleFunc.GET(*testRequest)
+		case PUTMETHOD:
+			*resp = handleFunc.PUT(*testRequest)
+		case DELETEMETHOD:
+			*resp = handleFunc.DELETE(*testRequest)
+		}
+	})
 }
