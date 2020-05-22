@@ -62,7 +62,7 @@ type Client struct {
 	DB              *gorm.DB
 	hub             *Hub
 	SubscribeId     []byte
-	HandlerFunction HandlerFunction
+	HandlerFunction HandlerFunctionInterface
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
