@@ -2,7 +2,6 @@ package rtp
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -37,37 +36,18 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin:       func(r *http.Request) bool { return true },
 }
 
-func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println("Websocket Upgrade Error: ", err)
-		return nil, err
-	}
-
-	return conn, nil
-}
-
-type Rooms struct {
-	Register   chan *Client
-	Unregister chan *Client
-	Clients    map[string]map[*Client]bool
-	// Broadcast  chan Message
-	DB *gorm.DB
-}
-
 type Client struct {
 	// The websocket connection.
-	Conn            *websocket.Conn
-	Send            chan []byte
-	DB              *gorm.DB
-	hub             *Hub
-	SubscribeId     []byte
-	HandlerFunction HandlerFunctionInterface
+	Conn        *websocket.Conn
+	Send        chan []byte
+	DB          *gorm.DB
+	hub         *Hub
+	SubscribeId []byte
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
 
-func (c *Client) ReadPump() {
+func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
 		c.Conn.Close()
@@ -132,17 +112,4 @@ func (c *Client) writePump() {
 			}
 		}
 	}
-}
-func (s *Rooms) Serve(channel string, auths *Rooms, w http.ResponseWriter, r *http.Request, db *gorm.DB) {
-	conn, err := Upgrade(w, r)
-	if err != nil {
-		fmt.Fprintf(w, "%+v\n", err)
-	}
-	client := &Client{
-		Conn: conn,
-		DB:   db,
-	}
-	auths.Register <- client
-	go client.ReadPump()
-	go client.writePump()
 }
