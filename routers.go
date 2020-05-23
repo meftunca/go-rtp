@@ -10,10 +10,10 @@ import (
 
 // handlerPath için interface örneği
 type HandlerFunctionInterface interface {
-	POST(RTPRequest) RTPResponse
-	GET(RTPRequest) RTPResponse
-	DELETE(RTPRequest) RTPResponse
-	PUT(RTPRequest) RTPResponse
+	POST(RTPRequest, *gorm.DB) RTPResponse
+	GET(RTPRequest, *gorm.DB) RTPResponse
+	DELETE(RTPRequest, *gorm.DB) RTPResponse
+	PUT(RTPRequest, *gorm.DB) RTPResponse
 }
 
 type HandlerFunc func(RTPRequest)

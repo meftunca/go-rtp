@@ -14,7 +14,7 @@ type RTPRequest struct {
 	USERID       string        `json:"userId"`
 	METHOD       string        `json:"method"`
 	SEARCHOBJECT MapStringFace `json:"searchObject"`
-	POSTDATA     MapStringFace `json:"postData"`
+	POSTDATA     interface{}   `json:"postData"`
 	// ! Auth (v2) de eklenecek
 	AUTHID string `json:"-"` //`json:"authTokenId"`
 

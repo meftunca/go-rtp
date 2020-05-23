@@ -49,7 +49,7 @@ func (h *Hub) run() {
 		case message := <-h.broadcast:
 			req, err := h.ByteToRTPRequest(message)
 			fmt.Println("\n\n----\tmessage", req.METHOD, err)
-			resp := SwitchHandlerMethod(req, h.HandlerFunction)
+			resp := h.SwitchHandlerMethod(req, h.HandlerFunction)
 			for client := range h.clients {
 				client.Conn.WriteJSON(resp)
 				// select {
@@ -63,17 +63,17 @@ func (h *Hub) run() {
 	}
 }
 
-func SwitchHandlerMethod(request RTPRequest, handler HandlerFunctionInterface) RTPResponse {
+func (h *Hub) SwitchHandlerMethod(request RTPRequest, handler HandlerFunctionInterface) RTPResponse {
 	newResponse := &RTPResponse{}
 	switch request.METHOD {
 	case "POST":
-		*newResponse = handler.POST(request)
+		*newResponse = handler.POST(request, h.DB)
 	case "GET":
-		*newResponse = handler.GET(request)
+		*newResponse = handler.GET(request, h.DB)
 	case "PUT":
-		*newResponse = handler.PUT(request)
+		*newResponse = handler.PUT(request, h.DB)
 	case "DELETE":
-		*newResponse = handler.DELETE(request)
+		*newResponse = handler.DELETE(request, h.DB)
 
 	}
 	return *newResponse
