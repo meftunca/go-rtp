@@ -16,8 +16,8 @@ type RTPRequest struct {
 	SEARCHOBJECT MapStringFace `json:"searchObject"`
 	POSTDATA     interface{}   `json:"postData"`
 	// ! Auth (v2) de eklenecek
-	AUTHID string `json:"-"` //`json:"authTokenId"`
-
+	AUTHID      string `json:"-"` //`json:"authTokenId"`
+	DeviceToken string `json:"deviceToken"`
 }
 
 /*
@@ -29,11 +29,17 @@ type RTPRequest struct {
 */
 
 type RTPResponse struct {
+	PATH          string        `json:"path"`
+	Method        string        `json:"method"`
+	DATA          MapStringFace `json:"data"`
+	EFFECTEDROWID int64         `json:"effectedRowId"`
+}
+
+type RTPMultiGetResponse struct {
 	PATH          string          `json:"path"`
+	Method        string          `json:"method"`
 	DATA          []MapStringFace `json:"data"`
-	DELETEDROWID  int64           `json:"deletedRowId"`
-	UPDATEDROWID  int64           `json:"updatedRowId"`
-	INSERTEDROWID int64           `json:"insertedRowId"`
+	EFFECTEDROWID int64           `json:"effectedRowId"`
 }
 
 const (

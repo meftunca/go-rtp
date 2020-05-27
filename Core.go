@@ -43,6 +43,7 @@ type Client struct {
 	DB          *gorm.DB
 	hub         *Hub
 	SubscribeId []byte
+	DeviceToken string //time based basic token
 	// Buffered channel of outbound messages.
 	send chan []byte
 }

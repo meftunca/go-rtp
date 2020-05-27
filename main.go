@@ -19,7 +19,7 @@ import (
 type RTPCore struct {
 	Server *mux.Router
 	DB     *gorm.DB
-	Hubs   map[string]Hub
+	Hubs   map[string]*Hub
 }
 
 type RTPCorePath struct {
@@ -29,5 +29,5 @@ type RTPCorePath struct {
 func (rtp *RTPCore) Start(router *mux.Router, db *gorm.DB) {
 	rtp.Server = router
 	rtp.DB = db
-	rtp.Hubs = make(map[string]Hub)
+	rtp.Hubs = make(map[string]*Hub)
 }
